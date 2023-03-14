@@ -92,7 +92,42 @@ RSpec.describe User, type: :model do
 
       expect(@user).not_to be_valid
     end
+  end
 
+  describe '.authenticate_with_credentials' do
+    it 'should successfully authenticate user when passwords match' do
+      @user = User.create(
+        first_name: "Samson", 
+        last_name: "Poon",
+        email: "test@test.com",
+        password: "12345",
+        password_confirmation: "12345"
+      )
 
+      expect(User.authenticate_with_credentials("test@test.com", "12345")).not_to be(nil)
+    end
+
+    it 'should still authenticate with whitespace' do
+      @user = User.create(
+        first_name: "Samson",
+        last_name: "Poon",
+        email: "test@test.com",
+        password: "12345",
+        password_confirmation: "12345"
+      )
+    
+      expect(User.authenticate_with_credentials("   test@test.com     ", "12345")).not_to be(nil)
+    end
+
+    it 'should still authenticate with wrong cases in email' do
+      @user = User.create(
+        first_name: "Samson",
+        last_name: "Poon",
+        email: "test@test.com",
+        password: "12345",
+        password_confirmation: "12345"
+      )
+      expect(User.authenticate_with_credentials("TEst@teSt.COM", "12345")).not_to be(nil)
+    end
   end
 end
